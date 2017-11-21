@@ -1,0 +1,31 @@
+Building a database using Python web scraping
+
+Sample of the HTML:
+
+https://pokemondb.net/pokedex/national
+
+<h2 id="gen-1">Generation 1 Pokémon</h2>
+
+<span class="infocard-tall "><a class="pkg " data-sprite=" pkgG1 n1 " href="/pokedex/bulbasaur"></a>
+<br><small>#001</small>
+<br><a class="ent-name" href="/pokedex/bulbasaur">Bulbasaur</a>
+<br><small class="aside"><a href="/type/grass" class="itype grass">Grass</a> &middot; <a href="/type/poison" class="itype poison">Poison</a></small>
+</span>
+
+<span class="infocard-tall "><a class="pkg " data-sprite=" pkgG1 n2 " href="/pokedex/ivysaur"></a>
+<br><small>#002</small>
+<br><a class="ent-name" href="/pokedex/ivysaur">Ivysaur</a>
+<br><small class="aside"><a href="/type/grass" class="itype grass">Grass</a> &middot; <a href="/type/poison" class="itype poison">Poison</a></small>
+</span>
+
+<span class="infocard-tall "><a class="pkg " data-sprite=" pkgG1 n3 " href="/pokedex/venusaur"></a>
+<br><small>#003</small>
+<br><a class="ent-name" href="/pokedex/venusaur">Venusaur</a>
+<br><small class="aside"><a href="/type/grass" class="itype grass">Grass</a> &middot; <a href="/type/poison" class="itype poison">Poison</a></small>
+</span>
+
+https://pokemondb.net/pokedex/farfetchd
+
+<div class="col desk-span-4 lap-span-6 figure">
+<img src="https://img.pokemondb.net/artwork/farfetchd.jpg" width="268" height="320" alt="Farfetch'd artwork by Ken Sugimori">
+</div>
