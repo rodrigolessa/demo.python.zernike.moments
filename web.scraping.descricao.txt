@@ -29,3 +29,13 @@ https://pokemondb.net/pokedex/farfetchd
 <div class="col desk-span-4 lap-span-6 figure">
 <img src="https://img.pokemondb.net/artwork/farfetchd.jpg" width="268" height="320" alt="Farfetch'd artwork by Ken Sugimori">
 </div>
+
+
+URL sprites:
+
+<img class="sprite" src="https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/venusaur.png" alt="Venusaur">
+
+
+Referência:
+
+https://www.pyimagesearch.com/2014/04/07/building-pokedex-python-indexing-sprites-using-shape-descriptors-step-3-6/
