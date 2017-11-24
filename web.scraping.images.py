@@ -44,8 +44,14 @@ if (page.status_code == 200):
     # Find for span tags with Images links and descriptions
     #infocard = soup.find_all('span', class_='infocard-tall')
     links = soup.find_all('a', class_='ent-name', href=True)
+    # total de imagens
+    total = len(links)
+    # inicia novo contador
+    i = 0
     # Loop over all link elements
     for l in links:
+        # contador
+        i += 1
         # Tratar os nomes das imagens
         name = l['href'].replace('/pokedex/', '')
         # print(l.text)
@@ -55,12 +61,12 @@ if (page.status_code == 200):
             print("Arquivo %s já existe!" % (name))
             continue
         # construct the URL to download the sprite
-        print("[x] downloading %s" % (name))
+        print("[%s/%s] downloading %s" % (i, total, name))
         imageUrl = "https://img.pokemondb.net/artwork/%s.%s" % (name, fileExtension)
         r = requests.get(imageUrl)
         # if the status code is not 200, ignore the sprite
         if r.status_code != 200:
-            print("[x] error downloading %s" % (name))
+            print("[x] downloading error %s" % (name))
             continue
         # write the sprite to file
         f = open("%s/%s.%s" % ('sprites', name.lower(), fileExtension), "wb")
