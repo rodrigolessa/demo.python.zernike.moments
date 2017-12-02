@@ -1,5 +1,7 @@
 Building a database using Python web scraping
 
+
+
 Sample of the HTML:
 
 https://pokemondb.net/pokedex/national
@@ -31,9 +33,42 @@ https://pokemondb.net/pokedex/farfetchd
 </div>
 
 
+
+
 URL sprites:
 
 <img class="sprite" src="https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/venusaur.png" alt="Venusaur">
+
+[x] downloading error deoxys
+[x] downloading error wormadam
+[x] downloading error rotom
+[x] downloading error giratina
+[x] downloading error shaymin
+[x] downloading error darmanitan
+[x] downloading error meloetta
+[x] downloading error meowstic
+[x] downloading error aegislash
+
+<a class="ent-name" href="/pokedex/meowstic">Meowstic</a>
+-- Clicar
+
+<img src="https://img.pokemondb.net/artwork/meowstic-male.jpg" width="289" height="320" alt="Meowstic (Male) artwork by Ken Sugimori">
+-- Find img tag
+-- Confirm using attribut with pokemon name
+-- Extract URL
+-- Confirm URL with "/artwork/" on it
+
+https://img.pokemondb.net/artwork/deoxys-normal.jpg
+https://img.pokemondb.net/artwork/deoxys-speed.jpg
+https://img.pokemondb.net/artwork/deoxys-defense.jpg
+https://img.pokemondb.net/artwork/deoxys-attack.jpg
+
+https://img.pokemondb.net/artwork/rayquaza-mega.jpg
+
+https://img.pokemondb.net/artwork/meowstic-male.jpg
+https://img.pokemondb.net/artwork/meowstic-female.jpg
+
+
 
 
 Referência:
