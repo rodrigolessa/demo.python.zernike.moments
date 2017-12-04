@@ -1,15 +1,20 @@
-Testing Zernike moments a powerfull shape descriptor, based on Zernike polynomials.
-Image processing and computer vision techniques such as:
-* Edge detection
-* Thresholding
-* Perspective warping
+Image moments are used to describe objects in an image. Using image moments you can calculate values such as the area of the object, the centroid (the center of the object, in terms of x, y coordinates), and information regarding how the object is rotated. Normally, we calculate image moments based on the contour or outline of an image, but this is not a requirement.
 
-We can abstractly represent the image using only a list of numbers (image feature vector).
+OpenCV provides the HuMoments function which can be used to characterize the structure and shape of an object.
+Similar to Hu moments, Zernike moments are used to describe the shape of an object; however, since the Zernike polynomials are orthogonal to each other, there is no redundancy of information between the moments.
 
-Python Libraries You Will Need:
-* Requests
-* BeautifulSoup (web scraping)
-* NumPy
-* SciPy
-* Scikit-Image
-* OpenCV (with bindings)
+One caveat to look out for when utilizing Zernike moments for shape description is the scaling and translation of the object in the image. Depending on where the image is translated in the image, your Zernike moments will be drastically different. Similarly, depending on how large or small (i.e. how your object is scaled) in the image, your Zernike moments will not be identical. However, the magnitudes of the Zernike moments are independent of the rotation of the object, which is an extremely nice property when working with shape descriptors.
+
+In order to avoid descriptors with different values based on the translation and scaling of the image, we normally first perform segmentation. That is, we segment the foreground (the object in the image we are interested in) from the background (the “noise”, or the part of the image we do not want to describe). Once we have the segmentation, we can form a tight bounding box around the object and crop it out, obtaining translation invariance.
+
+Finally, we can resize the object to a constant NxM pixels, obtaining scale invariance.
+
+From there, it is straightforward to apply Zernike moments to characterize the shape of the object.
+
+As we will see later in this post, I will be utilizing scaling and translation invariance prior to applying Zernike moments.
+
+Line 2: Here we are importing the mahotas package which contains many useful image processing functions. This package also contains the implementation of our Zernike moments.
+Line 4: Let’s define a class for our descriptor. We’ll call it ZernikeMoments.
+Lines 5-8: We need a constructor for our ZernikeMoments class. It will take only a single parameter — the radius of the polynomial in pixels. The larger the radius, the more pixels will be included in the computation. This is an important parameter and you’ll likely have to tune it and play around with it to obtain adequately performing results if you use Zernike moments outside this series of blog posts.
+Lines 10-12: Here we define the describe method, which quantifies our image. This method requires an image to be described, and then calls the mahotas implementation of zernike_moments to compute the moments with the specified radius, supplied in Line 5.
+Overall, this isn’t much code. It’s mostly just a wrapper around the mahotas implementation of zernike_moments. But as I said, I like to define my descriptors as classes rather than functions to ensure the consistent use of parameters.
