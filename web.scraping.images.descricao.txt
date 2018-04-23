@@ -6,7 +6,7 @@ Sample of the HTML:
 
 https://pokemondb.net/pokedex/national
 
-<h2 id="gen-1">Generation 1 Pokémon</h2>
+<h2 id="gen-1">Generation 1 Pokï¿½mon</h2>
 
 <span class="infocard-tall "><a class="pkg " data-sprite=" pkgG1 n1 " href="/pokedex/bulbasaur"></a>
 <br><small>#001</small>
@@ -36,6 +36,12 @@ https://pokemondb.net/pokedex/farfetchd
 
 
 URL sprites:
+
+Initially try downloading de basic shape:
+    http://img.pokemondb.net/sprites/red-blue/normal/%s.png
+    http://img.pokemondb.net/sprites/red-blue/normal/ivysaur.png
+
+Then
 
 <img class="sprite" src="https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/venusaur.png" alt="Venusaur">
 
@@ -71,6 +77,6 @@ https://img.pokemondb.net/artwork/meowstic-female.jpg
 
 
 
-Referência:
+Referencia:
 
 https://www.pyimagesearch.com/2014/04/07/building-pokedex-python-indexing-sprites-using-shape-descriptors-step-3-6/

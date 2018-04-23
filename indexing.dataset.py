@@ -1,6 +1,6 @@
-# Now that we have our shape descriptor defined, we need to apply it to every Pokemon sprite in our database. This is a fairly straightforward process so I’ll let the code do most of the explaining. Let’s open up our favorite editor, create a file named index.py, and get to work:
+# Apply the shape descriptor defined to every sprite in dataset. 
 
-# import the necessary packages
+# Import the necessary packages
 from mypy.zernikemoments import ZernikeMoments
 import numpy as np
 import argparse
@@ -8,14 +8,18 @@ import cPickle
 import glob
 import cv2
  
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-s", "--sprites", required = True,
-	help = "Path where the sprites will be stored")
-ap.add_argument("-i", "--index", required = True,
-	help = "Path to where the index file will be stored")
-args = vars(ap.parse_args())
+# Construct the argument parser and parse the arguments
+#ap = argparse.ArgumentParser()
+#ap.add_argument("-s", "--sprites", required = True,
+#	help = "Path where the sprites will be stored")
+#ap.add_argument("-i", "--index", required = True,
+#	help = "Path to where the index file will be stored")
+#args = vars(ap.parse_args())
  
+imageFolder = 'spritesRedBlue'
+imageExtension = '.png'
+imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
+
 # initialize our descriptor (Zernike Moments with a radius
 # of 21 used to characterize the shape of our pokemon) and
 # our index dictionary
@@ -25,7 +29,8 @@ index = {}
 #Time to quantify our Pokemon sprites:
 
 # loop over the sprite images
-for spritePath in glob.glob(args["sprites"] + "/*.png"):
+#for spritePath in glob.glob(args["sprites"] + "/*.png"):
+for spritePath in glob.glob():
 	# parse out the pokemon name, then load the image and
 	# convert it to grayscale
 	pokemon = spritePath[spritePath.rfind("/") + 1:].replace(".png", "")
@@ -52,3 +57,14 @@ for spritePath in glob.glob(args["sprites"] + "/*.png"):
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[0]
 	cv2.drawContours(outline, [cnts], -1, 255, -1)
+
+	# compute Zernike moments to characterize the shape
+	# of pokemon outline, then update the index
+	moments = desc.describe(outline)
+	index[pokemon] = moments
+
+
+# write the index to file
+f = open(args["index"], "w")
+f.write(cPickle.dumps(index))
+f.close()
