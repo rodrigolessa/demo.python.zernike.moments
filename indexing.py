@@ -1,10 +1,11 @@
+﻿# Indexing the dataset
 # Apply the shape descriptor defined to every sprite in dataset. 
 
 # Import the necessary packages
-from mypy.zernikemoments import ZernikeMoments
+from zernike_moments import ZernikeMoments
 import numpy as np
 import argparse
-import cPickle
+import _pickle as cp
 import glob
 import cv2
  
@@ -19,6 +20,7 @@ import cv2
 imageFolder = 'spritesRedBlue'
 imageExtension = '.png'
 imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
+imagePickle = 'index.cpickle'
 
 # initialize our descriptor (Zernike Moments with a radius
 # of 21 used to characterize the shape of our pokemon) and
@@ -30,18 +32,17 @@ index = {}
 
 # loop over the sprite images
 #for spritePath in glob.glob(args["sprites"] + "/*.png"):
-for spritePath in glob.glob():
+for spritePath in glob.glob(imageFinder):
 	# parse out the pokemon name, then load the image and
 	# convert it to grayscale
-	pokemon = spritePath[spritePath.rfind("/") + 1:].replace(".png", "")
+	pokemon = spritePath[spritePath.rfind("/") + 1:].replace(imageExtension, "")
 	image = cv2.imread(spritePath)
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
  
 	# pad the image with extra white pixels to ensure the
 	# edges of the pokemon are not up against the borders
 	# of the image
-	image = cv2.copyMakeBorder(image, 15, 15, 15, 15,
-		cv2.BORDER_CONSTANT, value = 255)
+	image = cv2.copyMakeBorder(image, 15, 15, 15, 15, cv2.BORDER_CONSTANT, value = 255)
  
 	# invert the image and threshold it
 	thresh = cv2.bitwise_not(image)
@@ -53,10 +54,12 @@ for spritePath in glob.glob():
 	# contours (the outline) of the pokemone, then draw
 	# it
 	outline = np.zeros(image.shape, dtype = "uint8")
-	(cnts, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-		cv2.CHAIN_APPROX_SIMPLE)
-	cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[0]
-	cv2.drawContours(outline, [cnts], -1, 255, -1)
+
+	img2, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+	contours = sorted(contours, key = cv2.contourArea, reverse = True)[0]
+
+	cv2.drawContours(outline, contours, -1, 255, -1)
 
 	# compute Zernike moments to characterize the shape
 	# of pokemon outline, then update the index
@@ -65,6 +68,7 @@ for spritePath in glob.glob():
 
 
 # write the index to file
-f = open(args["index"], "w")
-f.write(cPickle.dumps(index))
+#f = open(args["index"], "w")
+f = open(imagePickle, "wb")
+f.write(cp.dumps(index))
 f.close()
