@@ -44,7 +44,9 @@ def getPokeImages(strLink, imageNumber):
     # Build paths using image name
     imageName = getImageName(strLink)
     httpcurl = '{}{}{}'.format(imageUrl, imageName, imageExtension)
-    physical = '{}/{}.{}{}'.format(imageFolder, imageZeros, imageName, imageExtension)
+    physical = '{}/{}{}{}'.format(imageFolder, imageZeros
+            , imageName.replace('-', '').title()
+            , imageExtension)
     # ! Information
     print("downloading {}".format(imageName))
     # If do not exists in image folder
