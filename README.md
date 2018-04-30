@@ -42,7 +42,7 @@ The steps of Execution:
 >> python web_scraping_images_redblue.py
 # Download images and place in a folder: spritesRedBlue\000Name.png
 >> python indexing.py
-# Creates an index file of moments of all images: indexing.moments
+# Creates an index file of moments of all images: index.pkl
 >> python find_screen.py -- screen01.png
 # Creates an image of the object that's found: object.png
 >> python whos.py -- object.png

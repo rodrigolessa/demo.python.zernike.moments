@@ -20,7 +20,7 @@ from PIL import Image as pim
 import numpy as np
 import cv2
 #import argparse
-import _pickle as cp
+import pickle as cp
 import glob
 #import pylab as plt
 #plt.plot([1,2,3])
@@ -37,7 +37,7 @@ import glob
 imageFolder = 'spritesRedBlue'
 imageExtension = '.png'
 imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
-imageMoments = 'indexing.moments'
+imageMomentsFile = 'index.pkl'
 imageDebug = 'Rapidash' #'Abra' #'Bulbasaur'
 index = {}
 
@@ -141,7 +141,6 @@ for spritePath in glob.glob(imageFinder):
 	index[imageName] = moments
 
 
-# cPickle for writing the index to file
-f = open(imageMoments, "wb")
-f.write(cp.dumps(index))
-f.close()
+# cPickle for writing the index in a file
+with open(imageMomentsFile, "wb") as outputFile:
+	cp.dump(index, outputFile, protocol=cp.HIGHEST_PROTOCOL)
