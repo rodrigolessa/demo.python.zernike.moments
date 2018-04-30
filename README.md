@@ -43,9 +43,9 @@ The steps of Execution:
 # Download images and place in a folder: spritesRedBlue\000Name.png
 >> python indexing.py
 # Creates an index file of moments of all images: index.pkl
->> python find_screen.py -- screen01.png
+>> python find_screen.py --query screens\gameboy_marowak.jpg
 # Creates an image of the object that's found: object.png
->> python whos.py -- object.png
+>> python whos.py --index index.pkl --object object.png
 # Compare the object and print its name: The object is: 'Name'
 
 Referenced:

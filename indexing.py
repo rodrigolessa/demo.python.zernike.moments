@@ -38,7 +38,7 @@ imageFolder = 'spritesRedBlue'
 imageExtension = '.png'
 imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
 imageMomentsFile = 'index.pkl'
-imageDebug = 'Rapidash' #'Abra' #'Bulbasaur'
+imageDebug = 'Marowak' #'Rapidash' #'Abra' #'Bulbasaur'
 index = {}
 
 # Initialize descriptor with a radius of 21 pixels, 
