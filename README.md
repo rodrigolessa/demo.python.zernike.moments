@@ -37,3 +37,17 @@ To avoid descriptors with different values based on the translation and scaling:
 * Translation invariance!
 * Resize the object to a constant NxM pixels;
 * Scale invariance!
+
+The steps of Execution:
+>> python web_scraping_images_redblue.py
+# Download images and place in a folder: spritesRedBlue\000Name.png
+>> python indexing.py
+# Creates an index file of moments of all images: indexing.moments
+>> python find_screen.py -- screen01.png
+# Creates an image of the object that's found: object.png
+>> python whos.py -- object.png
+# Compare the object and print its name: The object is: 'Name'
+
+Referenced:
+https://www.pyimagesearch.com/
+by Adrian Rosebrock

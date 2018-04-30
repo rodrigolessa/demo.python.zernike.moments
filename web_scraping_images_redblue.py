@@ -39,6 +39,20 @@ def getImageLinks(url):
 def getImageName(strLink):
     return strLink.replace('/', '').replace('pokedex', '').lower()
 
+	# if the name contains an apostrophe (such as in
+	# Farfetch'd, just simply remove it)
+	#parsedName = parsedName.replace("'", "")
+	# if the name contains a period followed by a space
+	# (as is the case with Mr. Mime), then replace it
+	# with a dash
+	#parsedName = parsedName.replace(". ", "-")
+	# handle the case for Nidoran (female)
+	#if parsedName.find(u'\u2640') != -1:
+		#parsedName = "nidoran-f"
+	# and handle the case for Nidoran (male)
+	#elif name.find(u'\u2642') != -1:
+		#parsedName = "nidoran-m"
+
 def getPokeImages(strLink, imageNumber):
     imageZeros = '{0:0>3}'.format(imageNumber)
     # Build paths using image name
