@@ -34,7 +34,7 @@ import glob
 #	help = "Path to where the index file will be stored")
 #args = vars(ap.parse_args())
  
-imageFolder = 'spritesRedBlue'
+imageFolder = 'sprites'
 imageExtension = '.png'
 imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
 imageMomentsFile = 'index.pkl'

@@ -40,7 +40,11 @@ To avoid descriptors with different values based on the translation and scaling:
 
 The steps of Execution:
 >> python web_scraping_images_redblue.py
-# Download images and place in a folder: spritesRedBlue\000Name.png
+or
+>> python web_scraping_images_redblue.py -generation 2
+or
+>> python web_scraping_images_redblue.py -g 3
+# Download images and place in a folder: sprites\000Name.png
 >> python indexing.py
 # Creates an index file of moments of all images: index.pkl
 >> python find_screen.py --query screens\gameboy_marowak.jpg

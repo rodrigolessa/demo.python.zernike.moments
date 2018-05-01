@@ -7,20 +7,50 @@ import requests
 import os.path
 # I just use for a break, waiting 5 seconds until next request
 import time
+import sys
+import argparse
 
 # Args constructor for execute on console, podendo ser obrigatórios
-#a = argparse.ArgumentParser()
-#a.add_argument("-p", "--image-list", required=True, help="Path to where the raw HTML file resides")
-#a.add_argument("-s", "--sprites", required=True, help="Path where the sprites will be stored")
+a = argparse.ArgumentParser()
+a.add_argument("-g", "--generation", required=False, help="Generation of images")
+args = vars(a.parse_args())
 
-#args = vars(a.parse_args())
+# Generations Links:
+# Generation 1 - https://img.pokemondb.net/sprites/red-blue/normal/bulbasaur.png
+# Generation 2 - https://img.pokemondb.net/sprites/silver/normal/bulbasaur.png
+# Generation 3 - https://img.pokemondb.net/sprites/ruby-sapphire/normal/bulbasaur.png
+# Generation 4 - https://img.pokemondb.net/sprites/diamond-pearl/normal/bulbasaur.png
+# Generation 5 - https://img.pokemondb.net/sprites/black-white/normal/bulbasaur.png
+# Generation 6 - https://img.pokemondb.net/sprites/x-y/normal/bulbasaur.png
+# Omega - https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/bulbasaur.png
+# Artwork - https://img.pokemondb.net/artwork/bulbasaur.jpg
 
 # Initial sets
 dbUrl = 'https://pokemondb.net/pokedex/national'
 imageUrl = 'https://img.pokemondb.net/sprites/red-blue/normal/'
-imageFolder = 'spritesRedBlue'
+imageFolder = 'sprites'
 imageExtension = '.png'
 i = 0
+
+if args["generation"] == '2':
+    imageFolder += 'Silver'
+    imageUrl = 'https://img.pokemondb.net/sprites/silver/normal/'
+elif args["generation"] == '3':
+    imageFolder += 'RubySapphire'
+    imageUrl = 'https://img.pokemondb.net/sprites/ruby-sapphire/normal/'
+elif args["generation"] == '4':
+    imageFolder += 'DiamondPearl'
+    imageUrl = 'https://img.pokemondb.net/sprites/diamond-pearl/normal/'
+elif args["generation"] == '5':
+    imageFolder += 'BlackWhite'
+    imageUrl = 'https://img.pokemondb.net/sprites/black-white/normal/'
+elif args["generation"] == '3':
+    imageFolder += 'XY'
+    imageUrl = 'https://img.pokemondb.net/sprites/x-y/normal/'
+
+
+if not os.path.exists(imageFolder):
+    os.makedirs(imageFolder)
 
 def getHTML(url):
     # Navigate to site
@@ -53,7 +83,8 @@ def getImageName(strLink):
 	#elif name.find(u'\u2642') != -1:
 		#parsedName = "nidoran-m"
 
-def getPokeImages(strLink, imageNumber):
+def getPokeImages(strLink, imageNumber, imageTotal):
+    # Landing zeros
     imageZeros = '{0:0>3}'.format(imageNumber)
     # Build paths using image name
     imageName = getImageName(strLink)
@@ -62,7 +93,8 @@ def getPokeImages(strLink, imageNumber):
             , imageName.replace('-', '').title()
             , imageExtension)
     # ! Information
-    print("downloading {}".format(imageName))
+    #print("downloading {}".format(imageName))
+    progress(imageNumber, imageTotal, status='downloading {}'.format(imageName))
     # If do not exists in image folder
     if os.path.exists(physical):
         return
@@ -70,24 +102,35 @@ def getPokeImages(strLink, imageNumber):
     r = requests.get(httpcurl)
     # If the status code is not 200, ignore the sprite
     if r.status_code != 200:
-        print("downloading error {0}".format(imageName))
+        #print("downloading error {0}".format(imageName))
         return
     # Write the sprite to file
     f = open(physical, "wb")
     f.write(r.content)
     f.close()
     # Wait until next link - Avoid Push out for remote host
-    time.sleep(5)
+    time.sleep(2)
+
+def progress(count, total, status=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+    # Round
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+    # Print
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
+    sys.stdout.flush()
 
 ##############################################################################
 # Execute web scraping
 # Get all valid links from url
 links = getImageLinks(dbUrl)
+# Images total
+total = len(links)
 # Loop over all link elements
 for l in links:
     i += 1
     # print(strLink.text) 
     # Extract URL from soup link 
     # print(strLink['href'])
-    # Download all images
-    getPokeImages(l['href'], i)
+    getPokeImages(l['href'], i, total)

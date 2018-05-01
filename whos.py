@@ -7,6 +7,19 @@ import argparse
 import pickle as cp
 import cv2
 
+import sys
+
+
+def progress(count, total, status=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
+    sys.stdout.flush() 
+
 # Construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-", "--index", required = True, help = "Path to where the index file will be stored")
@@ -18,8 +31,8 @@ index = open(args["index"], 'rb')
 index = cp.load(index)
 
 # Debugging:
-print('105Marowak:')
-print(index['105Marowak'])
+#print('105Marowak:')
+#print(index['105Marowak'])
 
 #oad the query image, convert it to grayscale, 
 # and resize it
@@ -52,14 +65,15 @@ queryFeatures = desc.describe(outline)
 # Perform the search to identify the pokemon
 searcher = Searcher(index)
 # Return 10 first similarities
-results = searcher.search(queryFeatures)[:10]
+results = searcher.search(queryFeatures)[:5]
 
 for r in results:
-    print(r)
+    #imageZeros = '{-:0>3}'.format(imageNumber)
+    progress(r[0], 1)
 
 print("That object is: {}".format(results[0][1].upper()))
  
 # Show our images
 cv2.imshow("image", image)
-cv2.waitKey(0)
+#cv2.waitKey(0)
 cv2.destroyAllWindows()

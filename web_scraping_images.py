@@ -25,7 +25,7 @@ import re
 baseUrl = 'https://pokemondb.net'
 baseUrlFolder = '/pokedex'
 baseUrlFolderImage = '/artwork'
-imageFolder = 'sprites'
+imageFolder = 'spritesArt'
 imageExtension = '.jpg'
 i = 0
 
