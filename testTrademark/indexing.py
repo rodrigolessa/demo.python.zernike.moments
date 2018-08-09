@@ -12,19 +12,31 @@ import argparse
 import cv2
 import pickle as cp
 import glob
+# Managing windows files
+import os
 
 # Construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-", "--object", required = False, help = "The object name for debug")
+ap.add_argument("-f", "--folder", required = True, help = "Path to where the files has stored")
+ap.add_argument("-e", "--extension", required = True, help = "Extension of the images")
+ap.add_argument("-i", "--index", required = True, help = "Path to where the index file will be stored")
+ap.add_argument("-d", "--debug", required = False, help = "The object name for debugging")
 
 args = vars(ap.parse_args())
 
-imageFolder = 'logos'
-imageExtension = '.png'
+imageFolder = args["folder"] #'logos'
+imageExtension = '.' + args["extension"] #'.png'
 imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
-imageMomentsFile = 'index.pkl'
-imageDebug = args["object"]
+imageMomentsFile = args["index"] #'index.pkl'
+imageDebug = args["debug"]
+debugPath = 'logos_debug'
 index = {}
+
+# If index file exists, try to delete
+try:
+    os.remove(imageMomentsFile)
+except OSError:
+    pass
 
 # Initialize descriptor with a radius of 160 pixels 
 # (is the maximum size of the images), 
@@ -41,20 +53,14 @@ for spritePath in glob.glob(imageFinder):
 	
 	# then load the image.
 	image = cv2.imread(spritePath)
+	# TODO: Migrate to Image class
+	#self.original = cv2.imread(path)
 
 	# Debugging: show original image
 	if imageName.find(imageDebug) >= 0:
 		cv2.imshow('original', image)
 		cv2.waitKey(0)
 
-	# Convert it to grayscale
-	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-	# Debugging: converted
-	if imageName.find(imageDebug) >= 0:
-		cv2.imshow('gray', image)
-		cv2.waitKey(0)
- 
 	# HACK: Not necessary
 	# Pad the image with extra white pixels to ensure the
 	# edges of the object are not up against the borders
@@ -65,23 +71,61 @@ for spritePath in glob.glob(imageFinder):
 	#if imageName.find(imageDebug) >= 0:
 		#cv2.imshow('pad', image)
 		#cv2.waitKey(0)
+
+	# Convert it to grayscale
+	grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	# TODO: Migrate to a function in Image class
+	#self.grayscale = cv2.cvtColor(self.original, cv2.COLOR_BGR2GRAY)		
+
+	# Debugging: converted
+	if imageName.find(imageDebug) >= 0:
+		cv2.imshow('grayscale', grayscale)
+		cv2.waitKey(0)
+
+	# Apply a blur filter to reduce noise
+	#blur = cv2.medianBlur(grayscale, 5)
+
+	#if imageName.find(imageDebug) >= 0:
+		#cv2.imshow('blur', blur)
+		#cv2.waitKey(0)
+
+	# Bilateral Filter can reduce unwanted noise very well 
+	# while keeping edges fairly sharp. 
+	# However, it is very slow compared to most filters
+	# Filter size: Large filters (d > 5) are very slow, 
+	# so it is recommended to use d=5 for real-time applications, 
+	# and perhaps d=9 for offline applications that need heavy noise filtering
+	blur = cv2.bilateralFilter(grayscale, 9, 75, 75)
+
+	cv2.imwrite(os.path.join(debugPath , '{}_blur.png'.format(imageName)), blur)
+
+	if imageName.find(imageDebug) >= 0:
+		cv2.imshow('bilateralFilter', blur)
+		cv2.waitKey(0)
  
 	# For segmentation: Flip the values of the pixels 
 	# (black pixels are turned to white, and white pixels to black).
-	thresh = cv2.bitwise_not(image)
+	# NOTE: Replaced by BilateralFilter
+	#thresh = cv2.bitwise_not(image)
 
 	# Debugging: Invert image
-	if imageName.find(imageDebug) >= 0:
-		cv2.imshow('inverted', thresh)
-		cv2.waitKey(0)
+	#if imageName.find(imageDebug) >= 0:
+		#cv2.imshow('inverted', thresh)
+		#cv2.waitKey(0)
 
 	# Then, any pixel with a value greater than zero (black) is set to 255 (white)
-	thresh[thresh > 0] = 255
+	# NOTE: First version
+	#thresh[thresh > 0] = 255
+	# NOTE: Second version
+	# THRESH_BINARY = fundo preto or THRESH_BINARY_INV = fundo branco
+	_, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
 	# Debugging: Invert image and threshold it
 	if imageName.find(imageDebug) >= 0:
 		cv2.imshow('thresholded', thresh)
 		cv2.waitKey(0)
+
+	# TODO: Reinforce contours
 
 	# First, we need a blank image to store outlines
 	# we appropriately a variable called outline 
@@ -92,9 +136,7 @@ for spritePath in glob.glob(imageFinder):
 	# type of image data, number of pixels etc.
 	# Shape of image is accessed by img.shape. It returns a tuple of number of rows, 
 	# columns and channels (if image is color):
-	outline = np.zeros(image.shape, dtype = "uint8")
-
-	# TODO: Show center of mass with radius mask
+	outline = np.zeros(thresh.shape, dtype = "uint8")
 
 	# Initialize the outline image,
 	# find the outermost contours (the outline) of the object, 
@@ -109,12 +151,14 @@ for spritePath in glob.glob(imageFinder):
 	# The outline is drawn as a filled in mask with white pixels:
 	cv2.drawContours(outline, [contours], -1, 255, -1)
 
+	cv2.imwrite(os.path.join(debugPath , '{}_outline.png'.format(imageName)), outline)
+
 	# Debugging: just outline of the object
 	if imageName.find(imageDebug) >= 0:
 		cv2.imshow('outline', outline)
-		cv2.imwrite('outline{}.png'.format(imageDebug), outline)
 		cv2.waitKey(0)
-		cv2.destroyAllWindows()
+
+	# TODO: Show center of mass with radius mask
 
 	# Compute Zernike moments to characterize the shape of object outline
 	moments = zm.describe(outline)
@@ -128,6 +172,26 @@ for spritePath in glob.glob(imageFinder):
 	# then update the index
 	index[imageName] = moments
 
+	cv2.destroyAllWindows()
+
+	# NOTE: Functions MAP(), REDUCE()
+	#images = map(pim.open, ['original.png', 'blur.png', 'outline.png'])
+	#widths, heights = zip(*(i.size for i in images))
+
+	#total_width = sum(widths)
+	#max_height = max(heights)
+
+	#new_im = pim.new('RGB', (total_width, max_height))
+
+	#x_offset = 0
+	#for im in images:
+		#new_im.paste(im, (x_offset,0))
+		#x_offset += im.size[0]
+
+	#new_im.save(os.path.join(debugPath , '{}_outline.png'.format(imageName)))
+
+	# Debugging: just write the original image and the threshold with radius mask
+	#cv2.imwrite(os.path.join(debugPath , '{}_outline.png'.format(imageName)), new_img)
 
 # cPickle for writing the index in a file
 with open(imageMomentsFile, "wb") as outputFile:

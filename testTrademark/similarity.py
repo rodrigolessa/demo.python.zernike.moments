@@ -10,8 +10,8 @@ import sys
 
 # Construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--index", required = True, help = "Path to where the index file will be stored")
-ap.add_argument("-o", "--object", required = True, help = "The object name")
+ap.add_argument("-", "--index", required = True, help = "Path where the index file be stored")
+ap.add_argument("-o", "--object", required = True, help = "The object name that we want to find similarities")
 
 args = vars(ap.parse_args())
  
@@ -23,6 +23,8 @@ index = cp.load(index)
 #print(index[args["object"]])
 
 queryFeatures = index[args["object"]]
+
+# TODO: Compare all images
 
 # Perform the search to identify the image
 searcher = Searcher(index)
@@ -36,6 +38,7 @@ for r in results:
         image = cv2.imread("logos/{}.png".format(r[1]))
         cv2.imshow('outline', image)
         cv2.waitKey(0)
+        # TODO: Write images name in a table
     else:
         print("nop: {} - {}".format(r[1].upper(), r[0]))
 
