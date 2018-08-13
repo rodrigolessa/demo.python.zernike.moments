@@ -11,7 +11,6 @@ import sys
 # Construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-", "--index", required = True, help = "Path where the index file be stored")
-ap.add_argument("-o", "--object", required = True, help = "The object name that we want to find similarities")
 
 args = vars(ap.parse_args())
  
@@ -19,27 +18,35 @@ args = vars(ap.parse_args())
 index = open(args["index"], 'rb')
 index = cp.load(index)
 
-# Debugging:
-#print(index[args["object"]])
-
-queryFeatures = index[args["object"]]
-
-# TODO: Compare all images
-
 # Perform the search to identify the image
 searcher = Searcher(index)
-# Return x first similarities
-results = searcher.search(queryFeatures)[:20]
 
-for r in results:
-    #imageZeros = '{-:0>3}'.format(imageNumber)
-    if r[0] < 0.14:
-        print("Similar: {} - {}".format(r[1].upper(), r[0]))
-        image = cv2.imread("logos/{}.png".format(r[1]))
-        cv2.imshow('outline', image)
-        cv2.waitKey(0)
-        # TODO: Write images name in a table
-    else:
-        print("nop: {} - {}".format(r[1].upper(), r[0]))
+#for obj in index:
+#RuntimeError: dictionary changed size during iteration
 
-cv2.destroyAllWindows()
+for obj in index:
+
+    # Debugging:
+    #print(obj)
+    #print(index[obj])
+
+    # Return 30 first similarities
+    results = searcher.search(index[obj])[:30]
+
+    for r in results:
+        #imageZeros = '{-:0>3}'.format(imageNumber)
+        image_to_delete = r[1]
+        image_distance = r[0]
+        if image_distance <= 0.011:
+            print("Similar: {} - {}".format(image_to_delete, image_distance))
+            # TODO: Write images name in a table
+            # try to delete the given user, handle if the user doesn't exist.
+            try:
+                del index[image_to_delete]
+            except KeyError:
+                print("{image} doesn't exist in index".format(image=image_to_delete))
+                pass
+        elif image_distance <= 0.051:
+            print("barely: {} - {}".format(image_to_delete, image_distance))
+
+#cv2.destroyAllWindows()
