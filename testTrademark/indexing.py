@@ -25,7 +25,7 @@ ap.add_argument("-i", "--index", required = True, help = "Path to where the inde
 args = vars(ap.parse_args())
 
 imageFolder = args["folder"] #'logos'
-imageExtension = '.' + args["extension"] #'.png'
+imageExtension = '.' + args["extension"].lower() #'.png'
 imageFinder = '{}/*{}'.format(imageFolder, imageExtension)
 imageMomentsFile = args["index"] #'index.pkl'
 
@@ -60,7 +60,7 @@ i = 1
 for spritePath in imagesInFolder:
 
 	# Extract image name, this will serve as unqiue key into the index dictionary.
-	imageName = spritePath[spritePath.rfind('\\') + 1:].replace(imageExtension, '')
+	imageName = spritePath[spritePath.rfind('\\') + 1:].lower().replace(imageExtension, '')
 
 	# Try to manipulate the image if it is possible
 	try:

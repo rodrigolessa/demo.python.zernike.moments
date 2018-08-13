@@ -8,12 +8,12 @@ class Searcher:
 		# store the index that we will be searching over
 		self.index = index
  
-	def search(self, queryFeatures):
+	def search(self, queryIndex, queryFeatures):
 		# initialize our dictionary of results
 		results = {}
  
 		# loop over the images in our index
-		for (k, features) in self.index.items():
+		for (k, features) in queryIndex.items():
 			# Compute the distance between the query features
 			# and features in our index, then update the results
 			d = dist.euclidean(queryFeatures, features)
