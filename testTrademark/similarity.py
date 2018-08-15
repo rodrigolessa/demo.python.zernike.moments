@@ -1,15 +1,15 @@
 # Import the necessary packages
 from zernike_moments import ZernikeMoments
 from searcher import Searcher
+from pymongo import MongoClient
 import image_utils as iutils
 import numpy as np
 import argparse
 import pickle as cp
 import cv2
 import sys
-from pymongo import MongoClient
 
-client = MongoClient('desenvolvimento', 27017)
+client = MongoClient('localhost', 27017)
 
 db = client.colidencia
 
@@ -54,10 +54,16 @@ for obj in indexb:
 
     progress(i, qt)
 
+    post = { "numeroProcesso": obj, "avaliado": False, "processos": [] }
+
+    # try to delete the object to avoid compare it self
+    try:
+        del indexa[obj]
+    except KeyError:
+        pass
+
     # Return 30 first similarities
     results = searcher.search(indexa, indexb[obj])[:30]
-
-    post = { "numeroProcesso": obj, "avaliado": False, "processos": [] }
 
     for r in results:
         #imageZeros = '{-:0>3}'.format(imageNumber)
@@ -66,20 +72,19 @@ for obj in indexb:
 
         proc = { "numeroProcesso": image_to_delete, "similaridade": image_distance, "igual": True }
 
-        if image_distance <= 0.011:
+        if image_distance <= 0.001:
 
             post["processos"].append(proc)
 
             #print("Similar: {} - {}".format(image_to_delete, image_distance))
-            # TODO: Write images name in a table
+
             # try to delete the given user, handle if the user doesn't exist.
             try:
                 del indexa[image_to_delete]
             except KeyError:
-                #print("{image} doesn't exist in index".format(image=image_to_delete))
                 pass
 
-        elif image_distance <= 0.051:
+        elif image_distance <= 0.021:
 
             post["processos"].append(proc)
 
