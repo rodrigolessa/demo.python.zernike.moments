@@ -90,7 +90,8 @@ for obj in indexb:
 
             #print("barely: {} - {}".format(image_to_delete, image_distance))
 
-    collection.insert_one(post)
+    if len(post["processos"]) > 0:
+    	collection.insert_one(post)
 
     i+=1
 
