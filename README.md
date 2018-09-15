@@ -39,18 +39,18 @@ To avoid descriptors with different values based on the translation and scaling:
 * Scale invariance!
 
 The steps of Execution:
->> python web_scraping_images_redblue.py
+1. python web_scraping_images_redblue.py
 or
->> python web_scraping_images_redblue.py -generation 2
+2. python web_scraping_images_redblue.py -generation 2
 or
->> python web_scraping_images_redblue.py -g 3
-# Download images and place in a folder: sprites\000Name.png
->> python indexing.py
-# Creates an index file of moments of all images: index.pkl
->> python find_screen.py --query screens\gameboy_marowak.jpg
-# Creates an image of the object that's found: object.png
->> python whos.py --index index.pkl --object object.png
-# Compare the object and print its name: The object is: 'Name'
+3. python web_scraping_images_redblue.py -g 3
+3.1. Download images and place in a folder: sprites\000Name.png
+4. python indexing.py
+4.1. Creates an index file of moments of all images: index.pkl
+5. python find_screen.py --query screens\gameboy_marowak.jpg
+5.1. Creates an image of the object that's found: object.png
+6. python whos.py --index index.pkl --object object.png
+6.1. Compare the object and print its name: The object is: 'Name'
 
 Referenced:
 https://www.pyimagesearch.com/
