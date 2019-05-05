@@ -17,6 +17,9 @@ class Searcher:
 			# Compute the distance between the query features
 			# and features in our index, then update the results
 			d = dist.euclidean(queryFeatures, features)
+
+			print('Caracterídtica: {} - {}'.format(features[0], features[1]))
+			
 			#print('Distance: {}'.format(d))
 			results[k] = d
  
