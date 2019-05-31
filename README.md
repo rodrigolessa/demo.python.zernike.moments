@@ -19,11 +19,10 @@ Python Libraries You Will Need:
 * OpenCV (with bindings)
 
 The steps:
-1. Download sprites (a dataset of images)
-2. Quantify sprites in terms of their outline (shape)
-2. Process the numeric data
-3. Train and evaluate learners
-4. Plot and compare results
+1. Download images (build a dataset)
+2. Extract features of the images in terms of their outline (the shape)
+2. Process (extract features) a new image
+3. Compare feature of the new image to the features of the dataset (using euclidean distance)
 
 Image moments:
 * Calculate the centroid (the center of the object, in terms of x, y coordinates);
@@ -37,6 +36,7 @@ To avoid descriptors with different values based on the translation and scaling:
 * Translation invariance!
 * Resize the object to a constant NxM pixels;
 * Scale invariance!
+* The Zernike Moment is rotation invariant.
 
 The steps of Execution:
 1. python web_scraping_images_redblue.py
